@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Star Wars Starships</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<nav>
+  <a href="/">Home</a>
+  <a href="/characters">Characters</a>
+  <a href="/films">Films</a>
+  <a href="/starships">Starships</a>
+</nav>
+
+<h1>Star Wars Starships</h1>
+<div th:each="starship : ${starships}">
+  <h3 th:text="${starship.name}"></h3>
+  <p th:text="'Model: ' + ${starship.model}"></p>
+  <img th:src="${starship.imageUrl}" alt="Starship Image"/>
+</div>
+
+</body>
+</html>
