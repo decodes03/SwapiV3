@@ -6,5 +6,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface StarshipRepository extends MongoRepository<Starship, String> {
-    List<Starship> findByName(String name);
+    static List<Starship> findByName(String name) {
+        return null;
+    }
+
+    boolean existsByName(String name);
 }

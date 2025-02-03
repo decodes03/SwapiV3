@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 @Service
 public class CharacterService {
     private final String BASE_URL = "https://swapi.dev/api/people/";
@@ -16,16 +16,15 @@ public class CharacterService {
     @Autowired
     private CharacterRepository characterRepository;
 
-    // Fetch all characters but only store/show name & image
     public List<Character> getAllCharacters() {
-        // API se fetch karo, DB me save nahi karna
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> response = restTemplate.getForObject(BASE_URL, Map.class);
 
         if (response != null && response.containsKey("results")) {
             List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
 
-            // Sirf Name aur Image fetch karo, aur return karo (save nahi karna)
+            System.out.println("Fetching characters from SWAPI API...");
+
             return results.stream()
                     .map(data -> new Character(
                             (String) data.get("name"),
@@ -36,22 +35,15 @@ public class CharacterService {
         return List.of();
     }
 
-    private List<Character> mapToCharacterList(List<Map<String, Object>> results) {
-        return results.stream()
-                .map(this::mapToCharacter) // mapToCharacter method ko call kar raha hai
-                .toList();
-    }
-
-
-    // Search specific character, fetch details if not present
     public List<Character> searchCharacterByName(String name) {
-        // Pehle database se check kar lo
         List<Character> cachedCharacters = characterRepository.findByName(name);
         if (!cachedCharacters.isEmpty()) {
-            return cachedCharacters; // Agar pehle se hai, toh wahi return karo
+            System.out.println("Fetching character '" + name + "' from Database...");
+            return cachedCharacters;
         }
 
-        // Agar DB mein nahi mila toh SWAPI API hit karo
+        System.out.println("Fetching character '" + name + "' from SWAPI API...");
+
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> response = restTemplate.getForObject(BASE_URL + "?search=" + name, Map.class);
 
@@ -59,10 +51,10 @@ public class CharacterService {
             List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
             List<Character> characters = mapToCharacterList(results);
 
-            // Save only if not already present in DB
             for (Character character : characters) {
                 boolean exists = characterRepository.findByName(character.getName()).stream().findFirst().isPresent();
                 if (!exists) {
+                    System.out.println("Saving '" + character.getName() + "' to Database...");
                     characterRepository.save(character);
                 }
             }
@@ -73,11 +65,12 @@ public class CharacterService {
         return List.of();
     }
 
+    private List<Character> mapToCharacterList(List<Map<String, Object>> results) {
+        return results.stream()
+                .map(this::mapToCharacter)
+                .toList();
+    }
 
-
-
-
-    // Map API response to Character object
     private Character mapToCharacter(Map<String, Object> data) {
         return new Character(
                 (String) data.get("name"),
@@ -92,13 +85,21 @@ public class CharacterService {
         );
     }
 
-    // Get character image URL
     private String getImageUrlForCharacter(String name) {
         switch (name) {
             case "Luke Skywalker": return "https://starwars-visualguide.com/assets/img/characters/1.jpg";
+            case "C-3PO": return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRO3IO6mCc-DzOcpCWI6V0SNBxzeAq42Yq1Ow&s";
+            case "R2-D2": return "https://i.pinimg.com/474x/84/41/b4/8441b4b44ec5c95c371c244d215056ad.jpg";
+            case "Owen Lars": return "https://i.namu.wiki/i/95TjCsQ-OAxsCXuM5a-BAh14c3Mm95SKY-5JEMOQkPQjLMwNsKZaHvsYEciW0umb6CenhzNCByg2em1vJDKLXg.webp";
             case "Darth Vader": return "https://starwars-visualguide.com/assets/img/characters/4.jpg";
+            case "Beru Whitesun lars": return "https://i.pinimg.com/736x/cd/55/1a/cd551a080b436e9b2a6c618321224de8.jpg";
+            case "R5-D4": return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaqyT5RQ1c85EymM9JavmMW_R5PCn3MsIZyrP0KoeOMBL2R-GKIHD1lx_kMEwbUjfYSQE&usqp=CAU";
             case "Leia Organa": return "https://upload.wikimedia.org/wikipedia/en/1/1b/Princess_Leia%27s_characteristic_hairstyle.jpg";
+            case "Biggs Darklighter": return "https://i.pinimg.com/564x/83/d0/b0/83d0b0dda0067f3aa0c651952d94e21a.jpg";
+            case "Obi-Wan Kenobi": return "https://m.media-amazon.com/images/I/71wamZkWakL._AC_UF1000,1000_QL80_.jpg";
             default: return "https://starwars-visualguide.com/assets/img/placeholder.jpg";
         }
     }
 }
+
+

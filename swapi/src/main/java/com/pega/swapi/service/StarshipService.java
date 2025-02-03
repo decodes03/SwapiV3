@@ -36,7 +36,7 @@ public class StarshipService {
 
     // Search specific starship, fetch details if not present
     public List<Starship> searchStarshipByName(String name) {
-        List<Starship> cachedStarships = starshipRepository.findByName(name);
+        List<Starship> cachedStarships = StarshipRepository.findByName(name);
         if (!cachedStarships.isEmpty()) {
             return cachedStarships; // If exists, return from DB
         }
@@ -50,7 +50,10 @@ public class StarshipService {
             List<Starship> starships = results.stream().map(this::mapToStarship).toList();
 
             for (Starship starship : starships) {
-                starshipRepository.save(starship);
+                boolean exists = StarshipRepository.findByName(starship.getName()).stream().findFirst().isPresent();
+                if (!exists) {
+                    starshipRepository.save(starship);
+                }
             }
             return starships;
         }

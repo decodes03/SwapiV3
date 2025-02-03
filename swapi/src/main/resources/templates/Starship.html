@@ -12,12 +12,36 @@
   <a href="/starships">Starships</a>
 </nav>
 
-<h1>Star Wars Starships</h1>
-<div th:each="starship : ${starships}">
-  <h3 th:text="${starship.name}"></h3>
-  <p th:text="'Model: ' + ${starship.model}"></p>
-  <img th:src="${starship.imageUrl}" alt="Starship Image"/>
-</div>
+<!--<h1>Star Wars Starships</h1>-->
+<!--<div th:each="starship : ${starships}">-->
+<!--  <h3 th:text="${starship.name}"></h3>-->
+<!--  <p th:text="'Model: ' + ${starship.model}"></p>-->
+<!--  <img th:src="${starship.imageUrl}" alt="Starship Image"/>-->
+<!--</div>-->
 
+<!--</body>-->
+<!--</html>-->
+<h1>Star Wars Starships</h1>
+<form method="get" action="/starships">
+  <div class="form-container">
+    <input type="text" name="name" placeholder="Search by name" class="search-box">
+    <button type="submit" class="search-button">Search</button>
+  </div>
+</form>
+<div class="starship-container">
+  <div th:each="starship : ${starships}" class="starship-card">
+    <div style="display: flex; align-items: center;">
+      <div>
+        <h3 th:text="${starship.name}"></h3>
+        <div th:if="${name}">
+        <p><strong>Name:</strong> <span th:text="${starship.name}"></span></p>
+          <p><strong>Model:</strong> <span th:text="${starship.model}"></span></p>
+          <p><strong>Manufacturer:</strong> <span th:text="${starship.manufacturer}"></span></p>
+        </div>
+      </div>
+      <img th:src="${starship.imageUrl}" alt="Starship Image" class="starship-img" />
+    </div>
+  </div>
+</div>
 </body>
 </html>

@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/swapi.iml" filepath="$PROJECT_DIR$/.idea/swapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/SwapiV3.iml" filepath="$PROJECT_DIR$/.idea/SwapiV3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swapi/swapi.iml" filepath="$PROJECT_DIR$/swapi/swapi.iml" />
     </modules>
   </component>
 </project>
